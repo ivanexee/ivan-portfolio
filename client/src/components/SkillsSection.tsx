@@ -1,14 +1,16 @@
 /* ============================================================
-   DESIGN: Dark Luxury Tech — Skills Section
-   Animated skill bars, tech stack grid, and category tabs
+   DESIGN: Editorial Skills — withradiance.com inspired
+   - Light cream background
+   - Numbered section header: (04) / (EXPERTISE)
+   - Two-column skill bars with animated fill
+   - Marquee tech stack at bottom
    ============================================================ */
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
 
-const skillCategories = [
+const skillGroups = [
   {
-    name: "Frontend",
-    color: "#00E5FF",
+    label: "Frontend",
     skills: [
       { name: "HTML5 / CSS3", level: 95 },
       { name: "JavaScript (ES6+)", level: 90 },
@@ -18,8 +20,7 @@ const skillCategories = [
     ],
   },
   {
-    name: "Backend & Tools",
-    color: "#FFD700",
+    label: "Backend & Tools",
     skills: [
       { name: "Node.js", level: 70 },
       { name: "REST APIs", level: 78 },
@@ -34,31 +35,30 @@ const techStack = [
   "HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Tailwind CSS",
   "Node.js", "Vite", "Git", "GitHub", "Framer Motion", "Gemini AI",
   "W3.CSS", "Font Awesome", "Google Maps API", "Responsive Design",
+  "HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Tailwind CSS",
+  "Node.js", "Vite", "Git", "GitHub", "Framer Motion", "Gemini AI",
 ];
 
-function SkillBar({ name, level, color, delay }: { name: string; level: number; color: string; delay: number }) {
+function SkillBar({ name, level, delay }: { name: string; level: number; delay: number }) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true });
+  const inView = useInView(ref, { once: true });
 
   return (
     <div ref={ref} className="mb-5">
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm text-white/80 font-medium" style={{ fontFamily: "Outfit, sans-serif" }}>
+        <span style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.88rem", color: "rgba(13,13,13,0.75)", fontWeight: 500 }}>
           {name}
         </span>
-        <span className="text-xs font-semibold" style={{ color, fontFamily: "JetBrains Mono, monospace" }}>
+        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.08em", color: "rgba(13,13,13,0.35)" }}>
           {level}%
         </span>
       </div>
-      <div className="skill-bar">
+      <div style={{ height: "2px", background: "rgba(13,13,13,0.1)", overflow: "hidden" }}>
         <motion.div
-          className="skill-bar-fill"
           initial={{ width: 0 }}
-          animate={isInView ? { width: `${level}%` } : { width: 0 }}
-          transition={{ duration: 1.2, delay, ease: [0.4, 0, 0.2, 1] }}
-          style={{
-            background: `linear-gradient(90deg, ${color}, ${color === "#00E5FF" ? "#0080FF" : "#FF8C00"})`,
-          }}
+          animate={inView ? { width: `${level}%` } : { width: 0 }}
+          transition={{ duration: 1.1, delay, ease: [0.4, 0, 0.2, 1] }}
+          style={{ height: "100%", background: "#00C8E0" }}
         />
       </div>
     </div>
@@ -67,91 +67,70 @@ function SkillBar({ name, level, color, delay }: { name: string; level: number; 
 
 export default function SkillsSection() {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section id="skills" className="py-24 relative overflow-hidden">
-      {/* Background glow */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-500/5 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none" />
+    <section id="skills" style={{ background: "#F5F3EE", color: "#0D0D0D" }}>
+      {/* Section header */}
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+        <div className="flex items-center justify-between py-5 border-b border-black/10">
+          <span className="section-num">(04)</span>
+          <span className="section-category">(EXPERTISE)</span>
+        </div>
+      </div>
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
-        {/* Section header */}
-        <motion.div
+      {/* Content */}
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-20" ref={ref}>
+        {/* Heading */}
+        <motion.h2
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="mb-16"
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+          style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.05, letterSpacing: "-0.04em", color: "#0D0D0D", marginBottom: "3rem" }}
         >
-          <p className="text-cyan-400 text-sm font-semibold tracking-widest uppercase mb-3" style={{ fontFamily: "JetBrains Mono, monospace" }}>
-            02 / Skills
-          </p>
-          <h2 className="text-4xl sm:text-5xl font-black text-white mb-4" style={{ fontFamily: "Syne, sans-serif" }}>
-            Technologies &<br />
-            <span className="text-gradient-gold">Expertise</span>
-          </h2>
-          <div className="section-divider" />
-        </motion.div>
+          The tools I use<br />to build your vision.
+        </motion.h2>
 
-        {/* Skill bars grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-          {skillCategories.map((cat, ci) => (
+        {/* Skill bars */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+          {skillGroups.map((group, gi) => (
             <motion.div
-              key={cat.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: ci * 0.15 }}
-              className="glass-card rounded-2xl p-8"
+              key={group.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.7, delay: gi * 0.15 }}
             >
-              <h3
-                className="text-lg font-bold mb-6 flex items-center gap-3"
-                style={{ fontFamily: "Syne, sans-serif", color: cat.color }}
-              >
-                <span
-                  className="w-2 h-2 rounded-full inline-block"
-                  style={{ background: cat.color, boxShadow: `0 0 8px ${cat.color}` }}
-                />
-                {cat.name}
-              </h3>
-              {cat.skills.map((skill, si) => (
+              <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.14em", color: "rgba(13,13,13,0.35)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+                {group.label}
+              </p>
+              {group.skills.map((skill, si) => (
                 <SkillBar
                   key={skill.name}
                   name={skill.name}
                   level={skill.level}
-                  color={cat.color}
-                  delay={0.3 + si * 0.1}
+                  delay={0.3 + gi * 0.1 + si * 0.08}
                 />
               ))}
             </motion.div>
           ))}
         </div>
+      </div>
 
-        {/* Tech stack tags */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-        >
-          <h3
-            className="text-sm font-semibold text-white/40 uppercase tracking-widest mb-6 text-center"
-            style={{ fontFamily: "JetBrains Mono, monospace" }}
-          >
-            Full Tech Stack
-          </h3>
-          <div className="flex flex-wrap gap-2 justify-center">
+      {/* Tech stack marquee */}
+      <div className="border-t py-6 overflow-hidden" style={{ borderColor: "rgba(13,13,13,0.08)" }}>
+        <div className="marquee-outer">
+          <div className="marquee-track">
             {techStack.map((tech, i) => (
-              <motion.span
-                key={tech}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={isInView ? { opacity: 1, scale: 1 } : {}}
-                transition={{ duration: 0.3, delay: 0.6 + i * 0.04 }}
-                className="tech-tag hover:bg-cyan-400/15 hover:border-cyan-400/40 transition-all duration-200 cursor-default"
+              <span
+                key={i}
+                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.7rem", letterSpacing: "0.1em", color: "rgba(13,13,13,0.22)", textTransform: "uppercase", whiteSpace: "nowrap" }}
               >
                 {tech}
-              </motion.span>
+                <span style={{ margin: "0 1.5rem", color: "rgba(13,13,13,0.1)" }}>·</span>
+              </span>
             ))}
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

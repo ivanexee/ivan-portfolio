@@ -1,126 +1,42 @@
 /* ============================================================
-   DESIGN: Dark Luxury Tech — Hero Section
-   Full-screen hero with animated typewriter, particle bg, CTAs
+   DESIGN: Dark Hero — withradiance.com inspired editorial style
+   - Oversized "IVAN" viewport-width display name
+   - Tagline above: "Build Fast. Build Smart. Build Once."
+   - Cinematic dark background image
+   - Minimal layout: tagline top, big name center, subtitle + CTA bottom
+   - Scroll indicator at bottom right
    ============================================================ */
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowDown, Github, Linkedin, Mail, ExternalLink } from "lucide-react";
+import { ArrowDown } from "lucide-react";
 
-const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030255758/DDfpWJxoFfb5X2JWXTp5x7/hero-bg-BAhcoDu46N73mNVz3q3x5i.webp";
-
-const ROLES = [
-  "Full-Stack Developer",
-  "Web App Builder",
-  "UI/UX Engineer",
-  "Digital Solutions Creator",
-];
-
-function useTypewriter(words: string[], speed = 80, pause = 2000) {
-  const [display, setDisplay] = useState("");
-  const [wordIdx, setWordIdx] = useState(0);
-  const [charIdx, setCharIdx] = useState(0);
-  const [deleting, setDeleting] = useState(false);
-
-  useEffect(() => {
-    const current = words[wordIdx];
-    let timeout: ReturnType<typeof setTimeout>;
-
-    if (!deleting && charIdx < current.length) {
-      timeout = setTimeout(() => setCharIdx((c) => c + 1), speed);
-    } else if (!deleting && charIdx === current.length) {
-      timeout = setTimeout(() => setDeleting(true), pause);
-    } else if (deleting && charIdx > 0) {
-      timeout = setTimeout(() => setCharIdx((c) => c - 1), speed / 2);
-    } else if (deleting && charIdx === 0) {
-      setDeleting(false);
-      setWordIdx((w) => (w + 1) % words.length);
-    }
-
-    setDisplay(current.slice(0, charIdx));
-    return () => clearTimeout(timeout);
-  }, [charIdx, deleting, wordIdx, words, speed, pause]);
-
-  return display;
-}
-
-const stats = [
-  { value: "3+", label: "Projects Shipped" },
-  { value: "2+", label: "Companies Served" },
-  { value: "4+", label: "Languages Used" },
-  { value: "100%", label: "Client Satisfaction" },
-];
+const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030255758/DDfpWJxoFfb5X2JWXTp5x7/hero-dark-bg-jjsBD9P9pySXUkzJ8kAmMm.webp";
 
 export default function HeroSection() {
-  const role = useTypewriter(ROLES);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [fontSize, setFontSize] = useState(160);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const testRef = useRef<HTMLSpanElement>(null);
 
-  // Particle canvas
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    const particles: { x: number; y: number; vx: number; vy: number; r: number; alpha: number }[] = [];
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    for (let i = 0; i < 60; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 2 + 0.5,
-        alpha: Math.random() * 0.5 + 0.1,
-      });
-    }
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
-        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 229, 255, ${p.alpha})`;
-        ctx.fill();
-      });
-
-      // Draw connections
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(0, 229, 255, ${0.08 * (1 - dist / 120)})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
+    const calcSize = () => {
+      const vw = window.innerWidth;
+      const padding = vw < 640 ? 48 : vw < 1024 ? 64 : 96;
+      const available = vw - padding;
+      // Binary search for best font size
+      let lo = 40, hi = 400;
+      const span = testRef.current;
+      if (!span) return;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) / 2;
+        span.style.fontSize = `${mid}px`;
+        if (span.offsetWidth <= available) lo = mid;
+        else hi = mid;
       }
-
-      animId = requestAnimationFrame(draw);
+      setFontSize(lo);
     };
-    draw();
-
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener("resize", resize);
-    };
+    calcSize();
+    window.addEventListener("resize", calcSize);
+    return () => window.removeEventListener("resize", calcSize);
   }, []);
 
   const scrollToAbout = () => {
@@ -130,174 +46,141 @@ export default function HeroSection() {
   return (
     <section
       id="hero"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      className="relative min-h-screen flex flex-col overflow-hidden"
+      style={{ background: "#0D0F12" }}
     >
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${HERO_BG})` }}
-      />
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-[#0D0F14]/75" />
-      {/* Radial gradient vignette */}
-      <div className="absolute inset-0 bg-radial-[ellipse_at_center] from-transparent via-transparent to-[#0D0F14]/80" />
+      {/* Hidden span for measuring text width */}
+      <span
+        ref={testRef}
+        aria-hidden="true"
+        style={{
+          fontFamily: "Syne, sans-serif",
+          fontWeight: 800,
+          letterSpacing: "-0.04em",
+          position: "absolute",
+          visibility: "hidden",
+          whiteSpace: "nowrap",
+          top: 0, left: 0,
+        }}
+      >
+        IVAN
+      </span>
 
-      {/* Particle canvas */}
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 w-full h-full pointer-events-none"
-        style={{ opacity: 0.6 }}
-      />
-
-      {/* Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="inline-flex items-center gap-2 mb-8"
-        >
-          <span className="tech-tag">
-            <span className="w-2 h-2 rounded-full bg-green-400 mr-2 animate-pulse inline-block" />
-            Available for new projects
-          </span>
-        </motion.div>
-
-        {/* Name */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.3 }}
-          className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-black mb-4 leading-none tracking-tight"
-          style={{ fontFamily: "Syne, sans-serif" }}
-        >
-          <span className="text-white">Hi, I'm </span>
-          <span className="text-gradient-cyan">Ivan</span>
-        </motion.h1>
-
-        {/* Typewriter role */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.5 }}
-          className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6 h-10 flex items-center justify-center gap-1"
-          style={{ fontFamily: "Outfit, sans-serif" }}
-        >
-          <span className="text-white/80">{role}</span>
-          <span className="text-cyan-400 cursor-blink">|</span>
-        </motion.div>
-
-        {/* Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.65 }}
-          className="text-base sm:text-lg text-white/60 max-w-2xl mx-auto mb-10 leading-relaxed"
-          style={{ fontFamily: "Outfit, sans-serif" }}
-        >
-          I build custom web applications and digital platforms that help businesses grow — from
-          restaurant websites to AI-powered university tools. Clean code, real results.
-        </motion.p>
-
-        {/* CTAs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.8 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-14"
-        >
-          <a
-            href="#projects"
-            onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
-            className="px-8 py-3.5 rounded-xl font-semibold text-[#0D0F14] bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 transition-all duration-200 glow-cyan flex items-center gap-2 text-sm"
-            style={{ fontFamily: "Outfit, sans-serif" }}
-          >
-            View My Work
-            <ExternalLink className="w-4 h-4" />
-          </a>
-          <a
-            href="#contact"
-            onClick={(e) => { e.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" }); }}
-            className="px-8 py-3.5 rounded-xl font-semibold text-white border border-white/20 hover:border-cyan-400/50 hover:bg-white/5 transition-all duration-200 text-sm"
-            style={{ fontFamily: "Outfit, sans-serif" }}
-          >
-            Get In Touch
-          </a>
-        </motion.div>
-
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 1.0 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-2xl mx-auto mb-16"
-        >
-          {stats.map((stat, i) => (
-            <div key={i} className="glass-card rounded-xl p-4 text-center">
-              <div
-                className="text-2xl font-black text-gradient-cyan mb-1"
-                style={{ fontFamily: "Syne, sans-serif" }}
-              >
-                {stat.value}
-              </div>
-              <div className="text-xs text-white/50" style={{ fontFamily: "Outfit, sans-serif" }}>
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Social links */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.7, delay: 1.2 }}
-          className="flex items-center justify-center gap-4"
-        >
-          <a
-            href="https://github.com/ivanexee"
-            target="_blank"
-            rel="noreferrer"
-            className="w-10 h-10 rounded-full glass-card flex items-center justify-center text-white/60 hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-200"
-          >
-            <Github className="w-4 h-4" />
-          </a>
-          <a
-            href="mailto:ivan@example.com"
-            className="w-10 h-10 rounded-full glass-card flex items-center justify-center text-white/60 hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-200"
-          >
-            <Mail className="w-4 h-4" />
-          </a>
-          <a
-            href="https://linkedin.com"
-            target="_blank"
-            rel="noreferrer"
-            className="w-10 h-10 rounded-full glass-card flex items-center justify-center text-white/60 hover:text-cyan-400 hover:border-cyan-400/30 transition-all duration-200"
-          >
-            <Linkedin className="w-4 h-4" />
-          </a>
-        </motion.div>
+      {/* Background */}
+      <div className="absolute inset-0 z-0">
+        <img
+          src={HERO_BG}
+          alt=""
+          className="w-full h-full object-cover"
+          style={{ opacity: 0.22, objectPosition: "center 40%" }}
+        />
+        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, #0D0F12 0%, transparent 30%, transparent 60%, #0D0F12 100%)" }} />
       </div>
 
-      {/* Scroll indicator */}
-      <motion.button
-        onClick={scrollToAbout}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/40 hover:text-cyan-400 transition-colors"
+      {/* Main content */}
+      <div
+        ref={containerRef}
+        className="relative z-10 flex flex-col justify-between flex-1 min-h-screen px-6 lg:px-12 py-20 max-w-[1440px] mx-auto w-full"
       >
-        <span className="text-xs tracking-widest uppercase" style={{ fontFamily: "JetBrains Mono, monospace" }}>
-          scroll
-        </span>
+        {/* Top row */}
         <motion.div
-          animate={{ y: [0, 6, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
+          className="flex items-start justify-between pt-4"
         >
-          <ArrowDown className="w-4 h-4" />
+          <div>
+            <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
+              Build Fast. Build Smart.
+            </p>
+            <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase", marginTop: "2px" }}>
+              Build Once.
+            </p>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#00C8E0] animate-pulse" />
+            <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
+              Open to work
+            </span>
+          </div>
         </motion.div>
-      </motion.button>
+
+        {/* Center: oversized name */}
+        <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-start"
+        >
+          <h1
+            className="display-xl text-[#F0EEE8] leading-none select-none"
+            style={{ fontSize: `${fontSize}px` }}
+          >
+            IVAN
+          </h1>
+        </motion.div>
+
+        {/* Bottom row */}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.6 }}
+          className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4"
+        >
+          {/* Left: subtitle + CTA */}
+          <div className="max-w-lg">
+            <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(240,238,232,0.55)", lineHeight: 1.7 }}>
+              A full-stack developer who builds custom web applications for businesses, restaurants, and educational institutions. Clean code. Real results.
+            </p>
+            <div className="flex items-center gap-3 mt-6">
+              <a
+                href="#projects"
+                onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
+                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
+                className="px-6 py-2.5 bg-[#F0EEE8] text-[#0D0F12] font-semibold hover:bg-[#00C8E0] transition-colors duration-200"
+              >
+                View Work
+              </a>
+              <a
+                href="#contact"
+                onClick={(e) => { e.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" }); }}
+                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
+                className="px-6 py-2.5 border border-[#F0EEE8]/25 text-[#F0EEE8]/60 hover:border-[#00C8E0] hover:text-[#00C8E0] transition-colors duration-200"
+              >
+                Get Started
+              </a>
+            </div>
+          </div>
+
+          {/* Right: stats + scroll */}
+          <div className="flex items-end gap-10">
+            {[
+              { num: "3+", label: "Apps Shipped" },
+              { num: "2+", label: "Companies" },
+              { num: "10+", label: "Tech Stack" },
+            ].map((s) => (
+              <div key={s.label} className="text-right">
+                <p style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "2rem", color: "#F0EEE8", lineHeight: 1 }}>
+                  {s.num}
+                </p>
+                <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase", marginTop: "4px" }}>
+                  {s.label}
+                </p>
+              </div>
+            ))}
+            <button
+              onClick={scrollToAbout}
+              className="flex flex-col items-center gap-1.5 text-[#F0EEE8]/25 hover:text-[#00C8E0] transition-colors ml-4"
+              aria-label="Scroll down"
+            >
+              <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+                Scroll
+              </span>
+              <ArrowDown className="w-3.5 h-3.5 animate-bounce" />
+            </button>
+          </div>
+        </motion.div>
+      </div>
     </section>
   );
 }

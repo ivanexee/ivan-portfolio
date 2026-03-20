@@ -1,26 +1,32 @@
 /* ============================================================
-   DESIGN: Dark Luxury Tech — Home Page
-   Single-page portfolio assembling all sections
+   DESIGN: Editorial Hybrid — Ivan Portfolio
+   Dark hero → Light editorial sections → Dark footer
+   withradiance.com inspired layout
    ============================================================ */
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
-import SkillsSection from "@/components/SkillsSection";
-import ProjectsSection from "@/components/ProjectsSection";
 import ServicesSection from "@/components/ServicesSection";
+import ProjectsSection from "@/components/ProjectsSection";
+import SkillsSection from "@/components/SkillsSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import CustomCursor from "@/components/CustomCursor";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#0D0F14] text-white overflow-x-hidden">
+    <div className="min-h-screen overflow-x-hidden" style={{ background: "#F5F3EE" }}>
+      <CustomCursor />
       <Navbar />
+      {/* Dark hero */}
       <HeroSection />
+      {/* Light editorial sections */}
       <AboutSection />
-      <SkillsSection />
-      <ProjectsSection />
       <ServicesSection />
+      <ProjectsSection />
+      <SkillsSection />
       <ContactSection />
+      {/* Dark footer */}
       <Footer />
     </div>
   );
