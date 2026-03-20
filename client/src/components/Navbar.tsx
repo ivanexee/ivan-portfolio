@@ -1,7 +1,8 @@
 /* ============================================================
    DESIGN: Editorial Navbar — withradiance.com inspired
-   Logo top-left, uppercase mono nav links top-right, one outlined CTA
-   Transparent on hero (dark), white on scroll (light sections)
+   - Animated "Ivan" logo: letters slide in one by one on mount
+   - Logo top-left, uppercase mono nav links top-right, one outlined CTA
+   - Transparent on hero (dark), cream on scroll (light sections)
    ============================================================ */
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,6 +15,8 @@ const navLinks = [
   { label: "Skills", href: "#skills" },
   { label: "Contact", href: "#contact" },
 ];
+
+const LOGO_LETTERS = ["I", "v", "a", "n"];
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -46,48 +49,70 @@ export default function Navbar() {
       >
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
           <div className="flex items-center justify-between h-14">
-            {/* Logo */}
+            {/* Animated Logo */}
             <a
               href="#hero"
               onClick={(e) => { e.preventDefault(); scrollTo("#hero"); }}
               className="flex items-center gap-2 group"
             >
-              <div
+              {/* Square badge */}
+              <motion.div
+                initial={{ scale: 0, rotate: -15 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.5, delay: 0.1, type: "spring", stiffness: 200 }}
                 className={`w-7 h-7 rounded-sm flex items-center justify-center font-black text-xs transition-colors duration-300 ${
                   isLight ? "bg-[#0D0D0D] text-[#F5F3EE]" : "bg-[#F0EEE8] text-[#0D0F12]"
                 }`}
                 style={{ fontFamily: "Syne, sans-serif" }}
               >
                 IV
-              </div>
+              </motion.div>
+
+              {/* Animated name letters */}
               <span
-                className={`font-bold text-sm tracking-tight transition-colors duration-300 ${
+                className={`font-bold text-sm tracking-tight overflow-hidden flex transition-colors duration-300 ${
                   isLight ? "text-[#0D0D0D]" : "text-[#F0EEE8]"
                 }`}
                 style={{ fontFamily: "Syne, sans-serif" }}
               >
-                Ivan
+                {LOGO_LETTERS.map((letter, i) => (
+                  <motion.span
+                    key={i}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, delay: 0.25 + i * 0.07, ease: [0.4, 0, 0.2, 1] }}
+                    style={{ display: "inline-block" }}
+                  >
+                    {letter}
+                  </motion.span>
+                ))}
               </span>
             </a>
 
             {/* Desktop links */}
             <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <a
+              {navLinks.map((link, i) => (
+                <motion.a
                   key={link.href}
                   href={link.href}
+                  initial={{ opacity: 0, y: -8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, delay: 0.4 + i * 0.06 }}
                   onClick={(e) => { e.preventDefault(); scrollTo(link.href); }}
                   className={isLight ? "nav-link-editorial" : "nav-link-editorial-light"}
                 >
                   {link.label}
-                </a>
+                </motion.a>
               ))}
             </div>
 
             {/* CTA */}
             <div className="hidden md:flex">
-              <a
+              <motion.a
                 href="#contact"
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.4, delay: 0.75 }}
                 onClick={(e) => { e.preventDefault(); scrollTo("#contact"); }}
                 className={`px-5 py-1.5 text-xs font-medium tracking-widest uppercase border transition-all duration-200 ${
                   isLight
@@ -97,7 +122,7 @@ export default function Navbar() {
                 style={{ fontFamily: "JetBrains Mono, monospace" }}
               >
                 Get Started
-              </a>
+              </motion.a>
             </div>
 
             {/* Mobile toggle */}

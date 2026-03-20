@@ -1,16 +1,17 @@
 /* ============================================================
    DESIGN: Dark Hero — withradiance.com inspired editorial style
-   - Oversized "IVAN" viewport-width display name
-   - Tagline above: "Build Fast. Build Smart. Build Once."
-   - Cinematic dark background image
-   - Minimal layout: tagline top, big name center, subtitle + CTA bottom
-   - Scroll indicator at bottom right
+   - Oversized "IVAN" viewport-width display name with letter-by-letter animation
+   - Dramatic tagline: "Every Language. Every Platform. Every Vision."
+   - Elevated stats: 15+ projects, 10+ companies, 20+ tech stack
+   - Business-focused CTA
    ============================================================ */
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowDown } from "lucide-react";
 
 const HERO_BG = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030255758/DDfpWJxoFfb5X2JWXTp5x7/hero-dark-bg-jjsBD9P9pySXUkzJ8kAmMm.webp";
+
+const LETTERS = ["I", "V", "A", "N"];
 
 export default function HeroSection() {
   const [fontSize, setFontSize] = useState(160);
@@ -22,7 +23,6 @@ export default function HeroSection() {
       const vw = window.innerWidth;
       const padding = vw < 640 ? 48 : vw < 1024 ? 64 : 96;
       const available = vw - padding;
-      // Binary search for best font size
       let lo = 40, hi = 400;
       const span = testRef.current;
       if (!span) return;
@@ -91,46 +91,55 @@ export default function HeroSection() {
         >
           <div>
             <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
-              Build Fast. Build Smart.
+              Every Language. Every Platform.
             </p>
             <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase", marginTop: "2px" }}>
-              Build Once.
+              Every Vision.
             </p>
           </div>
           <div className="hidden md:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00C8E0] animate-pulse" />
             <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
-              Open to work
+              Available for new clients
             </span>
           </div>
         </motion.div>
 
-        {/* Center: oversized name */}
-        <motion.div
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="flex flex-col items-start"
-        >
+        {/* Center: oversized name — letter-by-letter animation */}
+        <div className="flex flex-col items-start">
           <h1
-            className="display-xl text-[#F0EEE8] leading-none select-none"
+            className="display-xl text-[#F0EEE8] leading-none select-none flex"
             style={{ fontSize: `${fontSize}px` }}
           >
-            IVAN
+            {LETTERS.map((letter, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 80, skewY: 6 }}
+                animate={{ opacity: 1, y: 0, skewY: 0 }}
+                transition={{
+                  duration: 0.9,
+                  delay: 0.2 + i * 0.12,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                style={{ display: "inline-block" }}
+              >
+                {letter}
+              </motion.span>
+            ))}
           </h1>
-        </motion.div>
+        </div>
 
         {/* Bottom row */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={{ duration: 0.8, delay: 0.8 }}
           className="flex flex-col md:flex-row md:items-end justify-between gap-8 pb-4"
         >
           {/* Left: subtitle + CTA */}
           <div className="max-w-lg">
-            <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(240,238,232,0.55)", lineHeight: 1.7 }}>
-              A full-stack developer who builds custom web applications for businesses, restaurants, and educational institutions. Clean code. Real results.
+            <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1.05rem", color: "rgba(240,238,232,0.6)", lineHeight: 1.75 }}>
+              I build world-class websites and web applications for businesses of every size — from neighborhood restaurants to universities. If you have a vision, I have the code to bring it to life.
             </p>
             <div className="flex items-center gap-3 mt-6">
               <a
@@ -139,7 +148,7 @@ export default function HeroSection() {
                 style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
                 className="px-6 py-2.5 bg-[#F0EEE8] text-[#0D0F12] font-semibold hover:bg-[#00C8E0] transition-colors duration-200"
               >
-                View Work
+                See My Work
               </a>
               <a
                 href="#contact"
@@ -147,22 +156,27 @@ export default function HeroSection() {
                 style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
                 className="px-6 py-2.5 border border-[#F0EEE8]/25 text-[#F0EEE8]/60 hover:border-[#00C8E0] hover:text-[#00C8E0] transition-colors duration-200"
               >
-                Get Started
+                Hire Me
               </a>
             </div>
           </div>
 
-          {/* Right: stats + scroll */}
+          {/* Right: elevated stats + scroll */}
           <div className="flex items-end gap-10">
             {[
-              { num: "3+", label: "Apps Shipped" },
-              { num: "2+", label: "Companies" },
-              { num: "10+", label: "Tech Stack" },
+              { num: "15+", label: "Projects Delivered" },
+              { num: "10+", label: "Companies Served" },
+              { num: "20+", label: "Technologies" },
             ].map((s) => (
               <div key={s.label} className="text-right">
-                <p style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "2rem", color: "#F0EEE8", lineHeight: 1 }}>
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.0 }}
+                  style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "2rem", color: "#F0EEE8", lineHeight: 1 }}
+                >
                   {s.num}
-                </p>
+                </motion.p>
                 <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase", marginTop: "4px" }}>
                   {s.label}
                 </p>

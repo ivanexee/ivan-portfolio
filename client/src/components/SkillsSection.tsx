@@ -1,64 +1,80 @@
 /* ============================================================
    DESIGN: Editorial Skills — withradiance.com inspired
-   - Light cream background
-   - Numbered section header: (04) / (EXPERTISE)
-   - Two-column skill bars with animated fill
-   - Marquee tech stack at bottom
+   - "Every language. No exceptions." heading
+   - Covers all major languages: HTML, CSS, JS, TS, Python, Java, C++, etc.
+   - No AI references — pure engineering craft
+   - Interactive hover: skill bar highlights on hover
    ============================================================ */
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 
 const skillGroups = [
   {
-    label: "Frontend",
+    label: "Languages",
     skills: [
-      { name: "HTML5 / CSS3", level: 95 },
-      { name: "JavaScript (ES6+)", level: 90 },
-      { name: "TypeScript", level: 80 },
-      { name: "React.js", level: 82 },
-      { name: "Tailwind CSS", level: 88 },
+      { name: "HTML5 / CSS3", level: 98 },
+      { name: "JavaScript (ES6+)", level: 95 },
+      { name: "TypeScript", level: 90 },
+      { name: "Python", level: 85 },
+      { name: "Java", level: 80 },
+      { name: "C / C++", level: 75 },
     ],
   },
   {
-    label: "Backend & Tools",
+    label: "Frameworks & Tools",
     skills: [
-      { name: "Node.js", level: 70 },
-      { name: "REST APIs", level: 78 },
-      { name: "Git & GitHub", level: 85 },
-      { name: "Vite / Build Tools", level: 75 },
-      { name: "Gemini AI API", level: 72 },
+      { name: "React.js", level: 93 },
+      { name: "Node.js", level: 88 },
+      { name: "Tailwind CSS", level: 95 },
+      { name: "REST APIs", level: 90 },
+      { name: "Git & GitHub", level: 92 },
+      { name: "Vite / Build Tools", level: 85 },
     ],
   },
 ];
 
 const techStack = [
-  "HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Tailwind CSS",
-  "Node.js", "Vite", "Git", "GitHub", "Framer Motion", "Gemini AI",
-  "W3.CSS", "Font Awesome", "Google Maps API", "Responsive Design",
-  "HTML5", "CSS3", "JavaScript", "TypeScript", "React", "Tailwind CSS",
-  "Node.js", "Vite", "Git", "GitHub", "Framer Motion", "Gemini AI",
+  "HTML5", "CSS3", "JavaScript", "TypeScript", "Python", "Java", "C++",
+  "React", "Node.js", "Tailwind CSS", "REST APIs", "Git", "GitHub",
+  "Vite", "Framer Motion", "Responsive Design", "SQL", "JSON", "Bash",
+  "HTML5", "CSS3", "JavaScript", "TypeScript", "Python", "Java", "C++",
+  "React", "Node.js", "Tailwind CSS", "REST APIs", "Git", "GitHub",
 ];
 
 function SkillBar({ name, level, delay }: { name: string; level: number; delay: number }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true });
+  const [hovered, setHovered] = useState(false);
 
   return (
-    <div ref={ref} className="mb-5">
+    <div
+      ref={ref}
+      className="mb-5 cursor-default"
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+    >
       <div className="flex justify-between items-center mb-2">
-        <span style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.88rem", color: "rgba(13,13,13,0.75)", fontWeight: 500 }}>
+        <motion.span
+          animate={{ color: hovered ? "#00C8E0" : "rgba(13,13,13,0.75)" }}
+          transition={{ duration: 0.2 }}
+          style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.88rem", fontWeight: 500 }}
+        >
           {name}
-        </span>
-        <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.08em", color: "rgba(13,13,13,0.35)" }}>
+        </motion.span>
+        <motion.span
+          animate={{ color: hovered ? "#00C8E0" : "rgba(13,13,13,0.35)" }}
+          transition={{ duration: 0.2 }}
+          style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.08em" }}
+        >
           {level}%
-        </span>
+        </motion.span>
       </div>
       <div style={{ height: "2px", background: "rgba(13,13,13,0.1)", overflow: "hidden" }}>
         <motion.div
           initial={{ width: 0 }}
           animate={inView ? { width: `${level}%` } : { width: 0 }}
           transition={{ duration: 1.1, delay, ease: [0.4, 0, 0.2, 1] }}
-          style={{ height: "100%", background: "#00C8E0" }}
+          style={{ height: "100%", background: hovered ? "#0D0D0D" : "#00C8E0", transition: "background 0.2s" }}
         />
       </div>
     </div>
@@ -86,10 +102,18 @@ export default function SkillsSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.05, letterSpacing: "-0.04em", color: "#0D0D0D", marginBottom: "3rem" }}
+          style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.05, letterSpacing: "-0.04em", color: "#0D0D0D", marginBottom: "0.75rem" }}
         >
-          The tools I use<br />to build your vision.
+          Every language.<br />No exceptions.
         </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={inView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7, delay: 0.2 }}
+          style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(13,13,13,0.5)", lineHeight: 1.7, maxWidth: "560px", marginBottom: "3.5rem" }}
+        >
+          From low-level C++ to modern TypeScript, from scripting in Python to building enterprise-grade Java systems — I speak the full language of software. Hover to explore.
+        </motion.p>
 
         {/* Skill bars */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">

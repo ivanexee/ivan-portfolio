@@ -1,13 +1,11 @@
 /* ============================================================
    DESIGN: Editorial Footer — withradiance.com inspired
    - Dark background (#0D0D0D)
+   - Real contact: i.cxc@icloud.com | (347) 792-9029
    - Oversized viewport-width "IVAN" display text at bottom
-   - Top row: logo/tagline left, links right
-   - Middle: nav links
-   - Bottom: giant IVAN text (like RADIANCE footer)
    ============================================================ */
 import { useEffect, useRef, useState } from "react";
-import { Github, Linkedin, Mail, ArrowUp } from "lucide-react";
+import { Github, Linkedin, Mail, Phone, ArrowUp } from "lucide-react";
 
 export default function Footer() {
   const [fontSize, setFontSize] = useState(200);
@@ -62,7 +60,7 @@ export default function Footer() {
               Ivan.
             </p>
             <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.88rem", color: "rgba(240,238,232,0.4)", maxWidth: "280px", lineHeight: 1.7 }}>
-              Building smart digital products for businesses, institutions, and communities.
+              Building world-class websites and web applications for businesses, institutions, and communities across New York and beyond.
             </p>
           </div>
 
@@ -91,6 +89,16 @@ export default function Footer() {
                 Connect
               </p>
               <div className="flex flex-col gap-3">
+                <a href="mailto:i.cxc@icloud.com"
+                  style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", color: "rgba(240,238,232,0.55)" }}
+                  className="hover:text-[#00C8E0] transition-colors duration-200 flex items-center gap-2">
+                  <Mail className="w-3.5 h-3.5" /> i.cxc@icloud.com
+                </a>
+                <a href="tel:+13477929029"
+                  style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", color: "rgba(240,238,232,0.55)" }}
+                  className="hover:text-[#00C8E0] transition-colors duration-200 flex items-center gap-2">
+                  <Phone className="w-3.5 h-3.5" /> (347) 792-9029
+                </a>
                 <a href="https://github.com/ivanexee" target="_blank" rel="noreferrer"
                   style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", color: "rgba(240,238,232,0.55)" }}
                   className="hover:text-[#00C8E0] transition-colors duration-200 flex items-center gap-2">
@@ -101,11 +109,6 @@ export default function Footer() {
                   className="hover:text-[#00C8E0] transition-colors duration-200 flex items-center gap-2">
                   <Linkedin className="w-3.5 h-3.5" /> LinkedIn
                 </a>
-                <a href="mailto:ivan.dev@outlook.com"
-                  style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", color: "rgba(240,238,232,0.55)" }}
-                  className="hover:text-[#00C8E0] transition-colors duration-200 flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5" /> Email
-                </a>
               </div>
             </div>
           </div>
@@ -114,7 +117,7 @@ export default function Footer() {
         {/* Divider */}
         <div style={{ borderTop: "1px solid rgba(240,238,232,0.07)", marginTop: "3rem", paddingTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.58rem", letterSpacing: "0.1em", color: "rgba(240,238,232,0.2)", textTransform: "uppercase" }}>
-            © {new Date().getFullYear()} Ivan. All rights reserved.
+            © {new Date().getFullYear()} Ivan. All rights reserved. · Columbia University & Brooklyn College
           </p>
           <button
             onClick={scrollToTop}

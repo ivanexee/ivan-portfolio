@@ -1,16 +1,16 @@
 /* ============================================================
    DESIGN: Editorial Contact — withradiance.com inspired
-   - Light cream background
-   - Numbered section header: (05) / (LET'S TALK)
-   - Large editorial CTA heading
-   - Two-column: left info panel, right dark form
+   - Real contact: i.cxc@icloud.com | (347) 792-9029
+   - Form submits via mailto: so messages go to Ivan's iCloud
+   - Dark form on cream background
    ============================================================ */
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
-import { Mail, Github, Linkedin, MapPin, Send, CheckCircle } from "lucide-react";
+import { Mail, Github, Linkedin, MapPin, Phone, CheckCircle, Send } from "lucide-react";
 
 const contactInfo = [
-  { icon: Mail, label: "Email", value: "ivan.dev@outlook.com", href: "mailto:ivan.dev@outlook.com" },
+  { icon: Mail, label: "Email", value: "i.cxc@icloud.com", href: "mailto:i.cxc@icloud.com" },
+  { icon: Phone, label: "Phone", value: "(347) 792-9029", href: "tel:+13477929029" },
   { icon: Github, label: "GitHub", value: "github.com/ivanexee", href: "https://github.com/ivanexee" },
   { icon: Linkedin, label: "LinkedIn", value: "linkedin.com/in/ivan-dev", href: "https://linkedin.com" },
   { icon: MapPin, label: "Location", value: "New York City, NY", href: null },
@@ -24,7 +24,13 @@ export default function ContactSection() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setTimeout(() => setSubmitted(true), 400);
+    // Build mailto link and open it — message goes directly to Ivan's iCloud
+    const subject = encodeURIComponent(`Website Inquiry from ${form.name}${form.company ? ` — ${form.company}` : ""}`);
+    const body = encodeURIComponent(
+      `Name: ${form.name}\nEmail: ${form.email}\nCompany: ${form.company || "N/A"}\n\nMessage:\n${form.message}`
+    );
+    window.location.href = `mailto:i.cxc@icloud.com?subject=${subject}&body=${body}`;
+    setTimeout(() => setSubmitted(true), 600);
   };
 
   return (
@@ -46,9 +52,9 @@ export default function ContactSection() {
           transition={{ duration: 0.8 }}
           style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(2.5rem, 5vw, 5rem)", lineHeight: 0.95, letterSpacing: "-0.04em", color: "#0D0D0D", marginBottom: "3.5rem" }}
         >
-          Let's build<br />
-          <span style={{ color: "#00C8E0" }}>something</span><br />
-          great together.
+          Ready to build<br />
+          your website?<br />
+          <span style={{ color: "#00C8E0" }}>Let's talk.</span>
         </motion.h2>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-16">
@@ -60,7 +66,7 @@ export default function ContactSection() {
             className="lg:col-span-2 flex flex-col gap-8"
           >
             <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(13,13,13,0.58)", lineHeight: 1.8 }}>
-              I'm currently available for freelance projects, contract work, and full-time opportunities. Whether you're a startup, a small business, or an institution — let's talk.
+              I'm currently available for new projects. Whether you're a restaurant owner, a startup founder, a school, or a growing business — I build websites that work. Fill out the form and I'll get back to you within 24 hours.
             </p>
 
             {/* Availability */}
@@ -128,7 +134,7 @@ export default function ContactSection() {
                     Message Sent!
                   </h3>
                   <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", color: "rgba(240,238,232,0.5)" }}>
-                    Thanks for reaching out. I'll get back to you within 24 hours.
+                    Your email client should have opened. I'll get back to you within 24 hours.
                   </p>
                 </motion.div>
               ) : (
@@ -166,13 +172,13 @@ export default function ContactSection() {
 
                   <div>
                     <label style={{ display: "block", fontFamily: "JetBrains Mono, monospace", fontSize: "0.58rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase", marginBottom: "0.5rem" }}>
-                      Company / Organization
+                      Business / Organization
                     </label>
                     <input
                       type="text"
                       value={form.company}
                       onChange={(e) => setForm({ ...form, company: e.target.value })}
-                      placeholder="Your company or institution"
+                      placeholder="Your restaurant, company, or school"
                       style={{ width: "100%", padding: "0.75rem 1rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#F0EEE8", fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", outline: "none" }}
                       className="focus:border-[#00C8E0] transition-colors duration-200 placeholder:text-white/20"
                     />
@@ -180,14 +186,14 @@ export default function ContactSection() {
 
                   <div>
                     <label style={{ display: "block", fontFamily: "JetBrains Mono, monospace", fontSize: "0.58rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase", marginBottom: "0.5rem" }}>
-                      Project Details *
+                      Tell Me About Your Project *
                     </label>
                     <textarea
                       required
                       rows={5}
                       value={form.message}
                       onChange={(e) => setForm({ ...form, message: e.target.value })}
-                      placeholder="Tell me about your project — what you need, your timeline, and any specific requirements..."
+                      placeholder="What kind of website do you need? What's your timeline and budget? Any specific features?"
                       style={{ width: "100%", padding: "0.75rem 1rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", color: "#F0EEE8", fontFamily: "DM Sans, sans-serif", fontSize: "0.9rem", outline: "none", resize: "none" }}
                       className="focus:border-[#00C8E0] transition-colors duration-200 placeholder:text-white/20"
                     />
@@ -201,6 +207,10 @@ export default function ContactSection() {
                     <Send style={{ width: "0.85rem", height: "0.85rem" }} />
                     Send Message
                   </button>
+
+                  <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.55rem", letterSpacing: "0.08em", color: "rgba(240,238,232,0.2)", textAlign: "center", marginTop: "0.5rem" }}>
+                    Messages are forwarded directly to i.cxc@icloud.com
+                  </p>
                 </form>
               )}
             </div>
