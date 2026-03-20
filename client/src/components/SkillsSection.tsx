@@ -1,9 +1,8 @@
 /* ============================================================
    DESIGN: Editorial Skills — withradiance.com inspired
+   - Fully responsive: stacked on mobile, 2-col on desktop
    - "Every language. No exceptions." heading
-   - Covers all major languages: HTML, CSS, JS, TS, Python, Java, C++, etc.
-   - No AI references — pure engineering craft
-   - Interactive hover: skill bar highlights on hover
+   - Interactive hover on skill bars
    ============================================================ */
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
@@ -57,7 +56,7 @@ function SkillBar({ name, level, delay }: { name: string; level: number; delay: 
         <motion.span
           animate={{ color: hovered ? "#00C8E0" : "rgba(13,13,13,0.75)" }}
           transition={{ duration: 0.2 }}
-          style={{ fontFamily: "DM Sans, sans-serif", fontSize: "0.88rem", fontWeight: 500 }}
+          style={{ fontFamily: "DM Sans, sans-serif", fontSize: "clamp(0.82rem, 2vw, 0.88rem)", fontWeight: 500 }}
         >
           {name}
         </motion.span>
@@ -96,13 +95,13 @@ export default function SkillsSection() {
       </div>
 
       {/* Content */}
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-20" ref={ref}>
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-14 lg:py-20" ref={ref}>
         {/* Heading */}
         <motion.h2
           initial={{ opacity: 0, y: 30 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8 }}
-          style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(2rem, 4vw, 3.5rem)", lineHeight: 1.05, letterSpacing: "-0.04em", color: "#0D0D0D", marginBottom: "0.75rem" }}
+          style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(1.75rem, 4vw, 3.5rem)", lineHeight: 1.05, letterSpacing: "-0.04em", color: "#0D0D0D", marginBottom: "0.75rem" }}
         >
           Every language.<br />No exceptions.
         </motion.h2>
@@ -110,13 +109,13 @@ export default function SkillsSection() {
           initial={{ opacity: 0, y: 16 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.7, delay: 0.2 }}
-          style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(13,13,13,0.5)", lineHeight: 1.7, maxWidth: "560px", marginBottom: "3.5rem" }}
+          style={{ fontFamily: "DM Sans, sans-serif", fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "rgba(13,13,13,0.5)", lineHeight: 1.7, maxWidth: "560px", marginBottom: "3rem" }}
         >
           From low-level C++ to modern TypeScript, from scripting in Python to building enterprise-grade Java systems — I speak the full language of software. Hover to explore.
         </motion.p>
 
         {/* Skill bars */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-20">
           {skillGroups.map((group, gi) => (
             <motion.div
               key={group.label}

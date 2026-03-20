@@ -1,8 +1,7 @@
 /* ============================================================
    DESIGN: Editorial About — withradiance.com inspired
-   - Elevated language: "every language", "no limits"
-   - Education: Columbia University + Brooklyn College
-   - No AI references — pure engineering craft
+   - Fully responsive: stacked on mobile, side-by-side on desktop
+   - Elevated language, Columbia University, no AI references
    - Interactive hover on highlight items
    ============================================================ */
 import { useRef, useState } from "react";
@@ -35,11 +34,11 @@ export default function AboutSection() {
       </div>
 
       {/* Main content */}
-      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-20 lg:py-28">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-14 lg:py-24">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
 
-          {/* Left: collage */}
-          <div className="relative h-[480px] lg:h-[560px]">
+          {/* Left: collage — hidden on mobile, shown on lg+ */}
+          <div className="hidden lg:block relative h-[560px]">
             {/* Restaurant mockup */}
             <motion.div
               initial={{ opacity: 0, y: 30, rotate: -2 }}
@@ -72,7 +71,7 @@ export default function AboutSection() {
               </div>
             </motion.div>
 
-            {/* Code image — small floating */}
+            {/* Code image */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
@@ -96,6 +95,12 @@ export default function AboutSection() {
             </motion.div>
           </div>
 
+          {/* Mobile: simple stacked images */}
+          <div className="lg:hidden grid grid-cols-2 gap-3">
+            <img src={RESTAURANT_IMG} alt="Huitlacoche Taqueria" className="w-full h-40 object-cover shadow-md" />
+            <img src={BROOKLYN_IMG} alt="BC MentorHub" className="w-full h-40 object-cover shadow-md" />
+          </div>
+
           {/* Right: editorial text */}
           <div className="flex flex-col justify-center">
             <motion.p
@@ -111,7 +116,7 @@ export default function AboutSection() {
               initial={{ opacity: 0, y: 30 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.3 }}
-              style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(2rem, 3.5vw, 3.2rem)", lineHeight: 1.05, letterSpacing: "-0.03em", color: "#0D0D0D", marginBottom: "1.5rem" }}
+              style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(1.75rem, 3.5vw, 3.2rem)", lineHeight: 1.05, letterSpacing: "-0.03em", color: "#0D0D0D", marginBottom: "1.5rem" }}
             >
               Every language.<br />Every platform.<br />Your vision — built.
             </motion.h2>
@@ -120,7 +125,7 @@ export default function AboutSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.45 }}
-              style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(13,13,13,0.6)", lineHeight: 1.8, marginBottom: "1.25rem" }}
+              style={{ fontFamily: "DM Sans, sans-serif", fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "rgba(13,13,13,0.6)", lineHeight: 1.8, marginBottom: "1.25rem" }}
             >
               I'm Ivan — a New York City-based developer who has mastered the full spectrum of programming languages and frameworks. From a family-owned taqueria in Queens to a mentorship platform for Brooklyn College students, I build production-ready digital products that perform at the highest level.
             </motion.p>
@@ -129,17 +134,17 @@ export default function AboutSection() {
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.55 }}
-              style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1rem", color: "rgba(13,13,13,0.6)", lineHeight: 1.8, marginBottom: "2.5rem" }}
+              style={{ fontFamily: "DM Sans, sans-serif", fontSize: "clamp(0.9rem, 2vw, 1rem)", color: "rgba(13,13,13,0.6)", lineHeight: 1.8, marginBottom: "2.5rem" }}
             >
               Whether it's HTML, CSS, JavaScript, TypeScript, Python, Java, C++, or any framework in between — I command the tools, not the other way around. My education at Columbia University and Brooklyn College sharpened both my theoretical foundations and my real-world engineering instincts.
             </motion.p>
 
-            {/* Highlights grid — interactive */}
+            {/* Highlights grid */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.65 }}
-              className="grid grid-cols-2 gap-x-6 gap-y-5 mb-8"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-5 mb-8"
             >
               {highlights.map((item, i) => (
                 <motion.div
@@ -198,7 +203,7 @@ export default function AboutSection() {
             ].map((item, i) => (
               <span
                 key={i}
-                style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "1.05rem", color: "rgba(13,13,13,0.16)", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}
+                style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "clamp(0.85rem, 2vw, 1.05rem)", color: "rgba(13,13,13,0.16)", letterSpacing: "-0.01em", whiteSpace: "nowrap" }}
               >
                 {item}
                 <span style={{ margin: "0 2rem", color: "rgba(13,13,13,0.1)" }}>·</span>

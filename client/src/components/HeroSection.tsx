@@ -1,9 +1,9 @@
 /* ============================================================
    DESIGN: Dark Hero — withradiance.com inspired editorial style
-   - Oversized "IVAN" viewport-width display name with letter-by-letter animation
-   - Dramatic tagline: "Every Language. Every Platform. Every Vision."
-   - Elevated stats: 15+ projects, 10+ companies, 20+ tech stack
-   - Business-focused CTA
+   - Oversized "IVAN" viewport-width display name
+   - Glitch effect: RGB chromatic aberration + scanline + skew
+   - Letter-by-letter entrance animation
+   - Elevated stats, business-focused CTA
    ============================================================ */
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
@@ -15,6 +15,7 @@ const LETTERS = ["I", "V", "A", "N"];
 
 export default function HeroSection() {
   const [fontSize, setFontSize] = useState(160);
+  const [glitchActive, setGlitchActive] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const testRef = useRef<HTMLSpanElement>(null);
 
@@ -37,6 +38,23 @@ export default function HeroSection() {
     calcSize();
     window.addEventListener("resize", calcSize);
     return () => window.removeEventListener("resize", calcSize);
+  }, []);
+
+  // Trigger glitch bursts randomly
+  useEffect(() => {
+    const scheduleGlitch = () => {
+      const delay = 2500 + Math.random() * 4000;
+      return setTimeout(() => {
+        setGlitchActive(true);
+        setTimeout(() => {
+          setGlitchActive(false);
+          scheduleGlitch();
+        }, 400 + Math.random() * 300);
+      }, delay);
+    };
+    // First glitch after letters animate in
+    const t = setTimeout(() => scheduleGlitch(), 1800);
+    return () => clearTimeout(t);
   }, []);
 
   const scrollToAbout = () => {
@@ -90,43 +108,49 @@ export default function HeroSection() {
           className="flex items-start justify-between pt-4"
         >
           <div>
-            <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
+            <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.55rem, 1.5vw, 0.65rem)", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
               Every Language. Every Platform.
             </p>
-            <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase", marginTop: "2px" }}>
+            <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.55rem, 1.5vw, 0.65rem)", letterSpacing: "0.18em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase", marginTop: "2px" }}>
               Every Vision.
             </p>
           </div>
-          <div className="hidden md:flex items-center gap-2">
+          <div className="hidden sm:flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#00C8E0] animate-pulse" />
-            <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
+            <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.55rem, 1.5vw, 0.65rem)", letterSpacing: "0.12em", color: "rgba(240,238,232,0.35)", textTransform: "uppercase" }}>
               Available for new clients
             </span>
           </div>
         </motion.div>
 
-        {/* Center: oversized name — letter-by-letter animation */}
-        <div className="flex flex-col items-start">
-          <h1
-            className="display-xl text-[#F0EEE8] leading-none select-none flex"
-            style={{ fontSize: `${fontSize}px` }}
-          >
-            {LETTERS.map((letter, i) => (
-              <motion.span
-                key={i}
-                initial={{ opacity: 0, y: 80, skewY: 6 }}
-                animate={{ opacity: 1, y: 0, skewY: 0 }}
-                transition={{
-                  duration: 0.9,
-                  delay: 0.2 + i * 0.12,
-                  ease: [0.16, 1, 0.3, 1],
-                }}
-                style={{ display: "inline-block" }}
-              >
-                {letter}
-              </motion.span>
-            ))}
-          </h1>
+        {/* Center: oversized IVAN with glitch */}
+        <div className="flex flex-col items-start relative">
+          {/* Scanline overlay */}
+          {glitchActive && <div className="glitch-scanline" />}
+
+          <div className={glitchActive ? "glitch-text-wrap" : ""} style={{ position: "relative" }}>
+            <h1
+              className={`display-xl text-[#F0EEE8] leading-none select-none flex ${glitchActive ? "glitch-text" : ""}`}
+              data-text="IVAN"
+              style={{ fontSize: `${fontSize}px` }}
+            >
+              {LETTERS.map((letter, i) => (
+                <motion.span
+                  key={i}
+                  initial={{ opacity: 0, y: 80, skewY: 6 }}
+                  animate={{ opacity: 1, y: 0, skewY: 0 }}
+                  transition={{
+                    duration: 0.9,
+                    delay: 0.2 + i * 0.12,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
+                  style={{ display: "inline-block" }}
+                >
+                  {letter}
+                </motion.span>
+              ))}
+            </h1>
+          </div>
         </div>
 
         {/* Bottom row */}
@@ -138,23 +162,23 @@ export default function HeroSection() {
         >
           {/* Left: subtitle + CTA */}
           <div className="max-w-lg">
-            <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "1.05rem", color: "rgba(240,238,232,0.6)", lineHeight: 1.75 }}>
+            <p style={{ fontFamily: "DM Sans, sans-serif", fontSize: "clamp(0.9rem, 2vw, 1.05rem)", color: "rgba(240,238,232,0.6)", lineHeight: 1.75 }}>
               I build world-class websites and web applications for businesses of every size — from neighborhood restaurants to universities. If you have a vision, I have the code to bring it to life.
             </p>
-            <div className="flex items-center gap-3 mt-6">
+            <div className="flex flex-wrap items-center gap-3 mt-6">
               <a
                 href="#projects"
                 onClick={(e) => { e.preventDefault(); document.querySelector("#projects")?.scrollIntoView({ behavior: "smooth" }); }}
-                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
-                className="px-6 py-2.5 bg-[#F0EEE8] text-[#0D0F12] font-semibold hover:bg-[#00C8E0] transition-colors duration-200"
+                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.6rem, 1.5vw, 0.65rem)", letterSpacing: "0.14em", textTransform: "uppercase" }}
+                className="px-5 py-2.5 bg-[#F0EEE8] text-[#0D0F12] font-semibold hover:bg-[#00C8E0] transition-colors duration-200"
               >
                 See My Work
               </a>
               <a
                 href="#contact"
                 onClick={(e) => { e.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: "smooth" }); }}
-                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.65rem", letterSpacing: "0.14em", textTransform: "uppercase" }}
-                className="px-6 py-2.5 border border-[#F0EEE8]/25 text-[#F0EEE8]/60 hover:border-[#00C8E0] hover:text-[#00C8E0] transition-colors duration-200"
+                style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.6rem, 1.5vw, 0.65rem)", letterSpacing: "0.14em", textTransform: "uppercase" }}
+                className="px-5 py-2.5 border border-[#F0EEE8]/25 text-[#F0EEE8]/60 hover:border-[#00C8E0] hover:text-[#00C8E0] transition-colors duration-200"
               >
                 Hire Me
               </a>
@@ -162,7 +186,7 @@ export default function HeroSection() {
           </div>
 
           {/* Right: elevated stats + scroll */}
-          <div className="flex items-end gap-10">
+          <div className="flex items-end gap-6 md:gap-10">
             {[
               { num: "15+", label: "Projects Delivered" },
               { num: "10+", label: "Companies Served" },
@@ -173,18 +197,18 @@ export default function HeroSection() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 1.0 }}
-                  style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "2rem", color: "#F0EEE8", lineHeight: 1 }}
+                  style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "clamp(1.4rem, 3vw, 2rem)", color: "#F0EEE8", lineHeight: 1 }}
                 >
                   {s.num}
                 </motion.p>
-                <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase", marginTop: "4px" }}>
+                <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.5rem, 1.2vw, 0.6rem)", letterSpacing: "0.12em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase", marginTop: "4px" }}>
                   {s.label}
                 </p>
               </div>
             ))}
             <button
               onClick={scrollToAbout}
-              className="flex flex-col items-center gap-1.5 text-[#F0EEE8]/25 hover:text-[#00C8E0] transition-colors ml-4"
+              className="hidden sm:flex flex-col items-center gap-1.5 text-[#F0EEE8]/25 hover:text-[#00C8E0] transition-colors ml-4"
               aria-label="Scroll down"
             >
               <span style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.6rem", letterSpacing: "0.15em", textTransform: "uppercase" }}>
