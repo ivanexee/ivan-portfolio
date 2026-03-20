@@ -454,8 +454,8 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
     setTimeout(onComplete, 600);
   }, [onComplete]);
 
-  // Lid angle: 0 = closed (flat), -115deg = fully open
-  const lidRotateX = -115 * lidAngle;
+  // lidAngle: 0 = closed, 1 = fully open
+  // rotateX(170deg) = closed (lid flat on base), rotateX(30deg) = open (screen facing viewer)
 
   if (phase === "loading" || phase === "exiting") {
     return (
@@ -499,12 +499,12 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
           pointerEvents: "none",
         }} />
 
-        {/* Laptop 3D container */}
+        {/* Laptop 3D container — perspective wrapper */}
         <div
           ref={laptopRef}
           style={{
-            perspective: "1400px",
-            perspectiveOrigin: "50% 55%",
+            perspective: "1200px",
+            perspectiveOrigin: "50% 30%",
             width: "min(560px, 90vw)",
             position: "relative",
             transform: `scale(${laptopScale})`,
@@ -512,94 +512,106 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
             transition: phase === "zoom" ? "none" : "transform 0.1s, opacity 0.1s",
           }}
         >
-          {/* ── Lid (screen half) ── */}
-          <div
-            style={{
-              transformOrigin: "bottom center",
-              transform: `rotateX(${lidRotateX}deg)`,
-              position: "relative",
-              zIndex: 2,
-            }}
-          >
-            <div style={{
-              background: "linear-gradient(to bottom, #1C1F24, #16191E)",
-              border: "2px solid #2C3038",
-              borderRadius: "14px 14px 0 0",
-              padding: "clamp(6px, 1.5vw, 12px)",
-              boxShadow: "0 -12px 60px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.04)",
-            }}>
-              {/* Camera */}
-              <div style={{ display: "flex", justifyContent: "center", marginBottom: "clamp(4px, 1vw, 8px)" }}>
-                <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: phase === "face" ? "rgba(0,200,224,0.6)" : "#252830", transition: "background 0.4s", boxShadow: phase === "face" ? "0 0 8px rgba(0,200,224,0.5)" : "none" }} />
-              </div>
+          {/* 3D scene — whole laptop tilted slightly toward viewer */}
+          <div style={{
+            transformStyle: "preserve-3d",
+            transform: "rotateX(12deg)",
+            position: "relative",
+          }}>
 
-              {/* Screen */}
-              <div style={{
-                background: "#050708",
-                borderRadius: "6px",
-                overflow: "hidden",
-                aspectRatio: "16/10",
+            {/* ── Lid (screen half) ── */}
+            {/* lidAngle=0: rotateX(170deg) = lid folded flat/closed over base */}
+            {/* lidAngle=1: rotateX(30deg)  = lid open, screen faces viewer    */}
+            <div
+              style={{
+                transformStyle: "preserve-3d",
+                transformOrigin: "bottom center",
+                transform: `rotateX(${170 - 140 * lidAngle}deg)`,
                 position: "relative",
+                zIndex: 2,
+              }}
+            >
+              <div style={{
+                background: "linear-gradient(to bottom, #1C1F24, #16191E)",
+                border: "2px solid #2C3038",
+                borderRadius: "14px 14px 0 0",
+                padding: "clamp(6px, 1.5vw, 12px)",
+                boxShadow: "0 -12px 60px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.04)",
               }}>
-                {/* IDLE state */}
-                {phase === "idle" && (
-                  <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
-                    <div style={{ width: "28px", height: "28px", border: "1.5px solid rgba(0,200,224,0.5)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      <div style={{ width: 0, height: 0, borderLeft: "8px solid rgba(0,200,224,0.8)", borderTop: "5px solid transparent", borderBottom: "5px solid transparent", marginLeft: "2px" }} />
-                    </div>
-                    <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.4rem, 1.2vw, 0.55rem)", letterSpacing: "0.15em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase" }}>
-                      Click to open
-                    </p>
-                  </div>
-                )}
+                {/* Camera */}
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "clamp(4px, 1vw, 8px)" }}>
+                  <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: phase === "face" ? "rgba(0,200,224,0.6)" : "#252830", transition: "background 0.4s", boxShadow: phase === "face" ? "0 0 8px rgba(0,200,224,0.5)" : "none" }} />
+                </div>
 
-                {/* OPENING state */}
-                {phase === "opening" && (
-                  <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <div style={{ width: "18px", height: "18px", border: "2px solid rgba(0,200,224,0.6)", borderTopColor: "transparent", borderRadius: "50%", animation: "intro-spin 0.6s linear infinite" }} />
-                  </div>
-                )}
-
-                {/* FACE state */}
-                {phase === "face" && (
-                  <FaceScreen onGranted={handleGranted} />
-                )}
-
-                {/* ZOOM state — keep face screen visible while zooming */}
-                {phase === "zoom" && (
-                  <div style={{ width: "100%", height: "100%", background: "#050708", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                    <motion.div
-                      initial={{ scale: 1, opacity: 1 }}
-                      animate={{ scale: 3, opacity: 0 }}
-                      transition={{ duration: 0.8 }}
-                      style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}
-                    >
-                      <div style={{ width: "28px", height: "28px", background: "#F0EEE8", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                        <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "0.7rem", color: "#0D0D0D" }}>IV</span>
+                {/* Screen */}
+                <div style={{
+                  background: "#050708",
+                  borderRadius: "6px",
+                  overflow: "hidden",
+                  aspectRatio: "16/10",
+                  position: "relative",
+                }}>
+                  {/* IDLE state */}
+                  {phase === "idle" && (
+                    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+                      <div style={{ width: "28px", height: "28px", border: "1.5px solid rgba(0,200,224,0.5)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ width: 0, height: 0, borderLeft: "8px solid rgba(0,200,224,0.8)", borderTop: "5px solid transparent", borderBottom: "5px solid transparent", marginLeft: "2px" }} />
                       </div>
-                    </motion.div>
-                  </div>
-                )}
+                      <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "clamp(0.4rem, 1.2vw, 0.55rem)", letterSpacing: "0.15em", color: "rgba(240,238,232,0.3)", textTransform: "uppercase" }}>
+                        Click to open
+                      </p>
+                    </div>
+                  )}
+
+                  {/* OPENING state */}
+                  {phase === "opening" && (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <div style={{ width: "18px", height: "18px", border: "2px solid rgba(0,200,224,0.6)", borderTopColor: "transparent", borderRadius: "50%", animation: "intro-spin 0.6s linear infinite" }} />
+                    </div>
+                  )}
+
+                  {/* FACE state */}
+                  {phase === "face" && (
+                    <FaceScreen onGranted={handleGranted} />
+                  )}
+
+                  {/* ZOOM state */}
+                  {phase === "zoom" && (
+                    <div style={{ width: "100%", height: "100%", background: "#050708", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                      <motion.div
+                        initial={{ scale: 1, opacity: 1 }}
+                        animate={{ scale: 3, opacity: 0 }}
+                        transition={{ duration: 0.8 }}
+                        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.5rem" }}
+                      >
+                        <div style={{ width: "28px", height: "28px", background: "#F0EEE8", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "0.7rem", color: "#0D0D0D" }}>IV</span>
+                        </div>
+                      </motion.div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* ── Base (keyboard half) ── */}
-          <div style={{
-            background: "linear-gradient(to bottom, #1E2228, #181B20)",
-            border: "2px solid #2C3038",
-            borderTop: "none",
-            borderRadius: "0 0 16px 16px",
-            height: "clamp(18px, 3vw, 26px)",
-            position: "relative",
-            zIndex: 1,
-            boxShadow: "0 16px 50px rgba(0,0,0,0.8)",
-          }}>
-            <div style={{ position: "absolute", bottom: "4px", left: "50%", transform: "translateX(-50%)", width: "clamp(60px, 14vw, 90px)", height: "clamp(8px, 1.5vw, 12px)", background: "#252830", borderRadius: "3px" }} />
-          </div>
+            {/* ── Base (keyboard half) ── */}
+            <div style={{
+              background: "linear-gradient(to bottom, #1E2228, #181B20)",
+              border: "2px solid #2C3038",
+              borderTop: "none",
+              borderRadius: "0 0 16px 16px",
+              height: "clamp(18px, 3vw, 26px)",
+              position: "relative",
+              zIndex: 1,
+              boxShadow: "0 16px 50px rgba(0,0,0,0.8)",
+            }}>
+              <div style={{ position: "absolute", bottom: "4px", left: "50%", transform: "translateX(-50%)", width: "clamp(60px, 14vw, 90px)", height: "clamp(8px, 1.5vw, 12px)", background: "#252830", borderRadius: "3px" }} />
+            </div>
 
-          {/* Shadow */}
-          <div style={{ position: "absolute", bottom: "-24px", left: "8%", right: "8%", height: "24px", background: "radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%)", filter: "blur(10px)" }} />
+            {/* Shadow */}
+            <div style={{ position: "absolute", bottom: "-24px", left: "8%", right: "8%", height: "24px", background: "radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%)", filter: "blur(10px)", zIndex: 0 }} />
+
+          </div>{/* end 3D scene */}
         </div>
 
         {/* Bottom label (idle only) */}
