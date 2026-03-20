@@ -1,8 +1,7 @@
 /* ============================================================
    DESIGN: Dark Hero — withradiance.com inspired editorial style
    - Oversized "IVAN" viewport-width display name
-   - Glitch effect: RGB chromatic aberration + scanline + skew
-   - Letter-by-letter entrance animation
+   - Clean letter-by-letter entrance animation (NO glitch)
    - Elevated stats, business-focused CTA
    ============================================================ */
 import { useEffect, useRef, useState } from "react";
@@ -15,8 +14,6 @@ const LETTERS = ["I", "V", "A", "N"];
 
 export default function HeroSection() {
   const [fontSize, setFontSize] = useState(160);
-  const [glitchActive, setGlitchActive] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
   const testRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
@@ -38,23 +35,6 @@ export default function HeroSection() {
     calcSize();
     window.addEventListener("resize", calcSize);
     return () => window.removeEventListener("resize", calcSize);
-  }, []);
-
-  // Trigger glitch bursts randomly
-  useEffect(() => {
-    const scheduleGlitch = () => {
-      const delay = 2500 + Math.random() * 4000;
-      return setTimeout(() => {
-        setGlitchActive(true);
-        setTimeout(() => {
-          setGlitchActive(false);
-          scheduleGlitch();
-        }, 400 + Math.random() * 300);
-      }, delay);
-    };
-    // First glitch after letters animate in
-    const t = setTimeout(() => scheduleGlitch(), 1800);
-    return () => clearTimeout(t);
   }, []);
 
   const scrollToAbout = () => {
@@ -92,14 +72,14 @@ export default function HeroSection() {
           className="w-full h-full object-cover"
           style={{ opacity: 0.22, objectPosition: "center 40%" }}
         />
-        <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, #0D0F12 0%, transparent 30%, transparent 60%, #0D0F12 100%)" }} />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(to bottom, #0D0F12 0%, transparent 30%, transparent 60%, #0D0F12 100%)" }}
+        />
       </div>
 
       {/* Main content */}
-      <div
-        ref={containerRef}
-        className="relative z-10 flex flex-col justify-between flex-1 min-h-screen px-6 lg:px-12 py-20 max-w-[1440px] mx-auto w-full"
-      >
+      <div className="relative z-10 flex flex-col justify-between flex-1 min-h-screen px-6 lg:px-12 py-20 max-w-[1440px] mx-auto w-full">
         {/* Top row */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -123,34 +103,28 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Center: oversized IVAN with glitch */}
-        <div className="flex flex-col items-start relative">
-          {/* Scanline overlay */}
-          {glitchActive && <div className="glitch-scanline" />}
-
-          <div className={glitchActive ? "glitch-text-wrap" : ""} style={{ position: "relative" }}>
-            <h1
-              className={`display-xl text-[#F0EEE8] leading-none select-none flex ${glitchActive ? "glitch-text" : ""}`}
-              data-text="IVAN"
-              style={{ fontSize: `${fontSize}px` }}
-            >
-              {LETTERS.map((letter, i) => (
-                <motion.span
-                  key={i}
-                  initial={{ opacity: 0, y: 80, skewY: 6 }}
-                  animate={{ opacity: 1, y: 0, skewY: 0 }}
-                  transition={{
-                    duration: 0.9,
-                    delay: 0.2 + i * 0.12,
-                    ease: [0.16, 1, 0.3, 1],
-                  }}
-                  style={{ display: "inline-block" }}
-                >
-                  {letter}
-                </motion.span>
-              ))}
-            </h1>
-          </div>
+        {/* Center: oversized IVAN — clean, no glitch */}
+        <div className="flex flex-col items-start">
+          <h1
+            className="display-xl text-[#F0EEE8] leading-none select-none flex"
+            style={{ fontSize: `${fontSize}px` }}
+          >
+            {LETTERS.map((letter, i) => (
+              <motion.span
+                key={i}
+                initial={{ opacity: 0, y: 80, skewY: 6 }}
+                animate={{ opacity: 1, y: 0, skewY: 0 }}
+                transition={{
+                  duration: 0.9,
+                  delay: 0.2 + i * 0.12,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                style={{ display: "inline-block" }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </h1>
         </div>
 
         {/* Bottom row */}
@@ -185,7 +159,7 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Right: elevated stats + scroll */}
+          {/* Right: stats + scroll */}
           <div className="flex items-end gap-6 md:gap-10">
             {[
               { num: "15+", label: "Projects Delivered" },
