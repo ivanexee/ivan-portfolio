@@ -7,9 +7,9 @@
 import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 
+const IVAN_PHOTO = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030255758/DDfpWJxoFfb5X2JWXTp5x7/ivan-photo_226dbee6.jpg";
 const RESTAURANT_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030255758/DDfpWJxoFfb5X2JWXTp5x7/restaurant-mockup-bTyaJVhRjbR57eZ869h5zw.webp";
 const BROOKLYN_IMG = "https://d2xsxph8kpxj0f.cloudfront.net/310419663030255758/DDfpWJxoFfb5X2JWXTp5x7/brooklyn-mockup-PmCkNYnh7JFzsNNFvbU2UY.webp";
-const CODE_IMG = "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400&q=80";
 
 const highlights = [
   { label: "Location", value: "New York City, NY" },
@@ -37,69 +37,89 @@ export default function AboutSection() {
       <div className="max-w-[1440px] mx-auto px-6 lg:px-12 py-14 lg:py-24">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-start">
 
-          {/* Left: collage — hidden on mobile, shown on lg+ */}
-          <div className="hidden lg:block relative h-[560px]">
-            {/* Restaurant mockup */}
-            <motion.div
-              initial={{ opacity: 0, y: 30, rotate: -2 }}
-              animate={inView ? { opacity: 1, y: 0, rotate: -2 } : {}}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="absolute top-0 left-0 w-[58%] shadow-xl overflow-hidden cursor-pointer"
-              whileHover={{ scale: 1.03, rotate: 0, zIndex: 10 }}
-            >
-              <img src={RESTAURANT_IMG} alt="Huitlacoche Taqueria website" className="w-full h-auto object-cover" />
-              <div className="absolute bottom-0 left-0 right-0 px-3 py-2" style={{ background: "rgba(13,13,13,0.82)" }}>
-                <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.58rem", letterSpacing: "0.1em", color: "rgba(240,238,232,0.7)", textTransform: "uppercase" }}>
-                  Huitlacoche Taqueria
-                </p>
+          {/* Left: Ivan's photo — editorial frame */}
+          <motion.div
+            initial={{ opacity: 0, y: 40 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.9, delay: 0.1 }}
+            className="relative flex justify-center lg:justify-start"
+            style={{ paddingBottom: "18px", paddingRight: "18px" }}
+          >
+            {/* Offset decorative border */}
+            <div style={{
+              position: "absolute",
+              top: "18px", left: "18px",
+              right: "0px", bottom: "0px",
+              border: "2px solid #00C8E0",
+              zIndex: 0,
+            }} />
+
+            {/* Photo container */}
+            <div style={{
+              position: "relative",
+              zIndex: 1,
+              width: "min(380px, 90vw)",
+              overflow: "hidden",
+              boxShadow: "0 24px 60px rgba(0,0,0,0.18)",
+            }}>
+              <img
+                src={IVAN_PHOTO}
+                alt="Ivan — App Developer"
+                style={{
+                  width: "100%",
+                  display: "block",
+                  objectFit: "cover",
+                  objectPosition: "center top",
+                  aspectRatio: "3/4",
+                  filter: "contrast(1.04) brightness(1.02)",
+                }}
+              />
+
+              {/* Gradient overlay at bottom */}
+              <div style={{
+                position: "absolute",
+                bottom: 0, left: 0, right: 0,
+                height: "38%",
+                background: "linear-gradient(to top, rgba(13,13,13,0.78) 0%, transparent 100%)",
+              }} />
+
+              {/* Name tag overlay */}
+              <div style={{
+                position: "absolute",
+                bottom: "1.5rem", left: "1.5rem",
+              }}>
+                <p style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.3rem", color: "#F5F3EE", letterSpacing: "-0.02em", lineHeight: 1.1 }}>Ivan</p>
+                <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.52rem", letterSpacing: "0.14em", color: "rgba(240,238,232,0.55)", textTransform: "uppercase", marginTop: "4px" }}>App Developer · NYC</p>
               </div>
-            </motion.div>
 
-            {/* Brooklyn mockup */}
-            <motion.div
-              initial={{ opacity: 0, y: 40, rotate: 2 }}
-              animate={inView ? { opacity: 1, y: 0, rotate: 2 } : {}}
-              transition={{ duration: 0.8, delay: 0.25 }}
-              className="absolute top-[28%] right-0 w-[52%] shadow-xl overflow-hidden cursor-pointer"
-              whileHover={{ scale: 1.03, rotate: 0, zIndex: 10 }}
-            >
-              <img src={BROOKLYN_IMG} alt="Brooklyn MentorHub app" className="w-full h-auto object-cover" />
-              <div className="absolute bottom-0 left-0 right-0 px-3 py-2" style={{ background: "rgba(13,13,13,0.82)" }}>
-                <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.58rem", letterSpacing: "0.1em", color: "rgba(240,238,232,0.7)", textTransform: "uppercase" }}>
-                  BC MentorHub
-                </p>
-              </div>
-            </motion.div>
+              {/* Cyan accent bar */}
+              <div style={{
+                position: "absolute",
+                top: 0, left: 0,
+                width: "3px", height: "100%",
+                background: "linear-gradient(to bottom, #00C8E0, transparent)",
+              }} />
+            </div>
 
-            {/* Code image */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={inView ? { opacity: 1, scale: 1 } : {}}
-              transition={{ duration: 0.7, delay: 0.4 }}
-              className="absolute bottom-0 left-[8%] w-[35%] shadow-lg overflow-hidden animate-float-slow"
-            >
-              <img src={CODE_IMG} alt="Code" className="w-full h-auto object-cover" />
-            </motion.div>
-
-            {/* Floating badge */}
+            {/* Floating stat badge */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.55 }}
-              className="absolute top-[16%] right-[2%] px-4 py-3 shadow-lg animate-float"
-              style={{ background: "#0D0D0D" }}
+              transition={{ duration: 0.6, delay: 0.6 }}
+              className="animate-float"
+              style={{
+                position: "absolute",
+                top: "-1rem", right: "0rem",
+                background: "#0D0D0D",
+                padding: "0.75rem 1.1rem",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.18)",
+                zIndex: 2,
+              }}
             >
-              <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.58rem", letterSpacing: "0.1em", color: "rgba(240,238,232,0.65)", textTransform: "uppercase" }}>
-                ▪ No limits.
-              </p>
+              <p style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.4rem", color: "#00C8E0", lineHeight: 1 }}>15+</p>
+              <p style={{ fontFamily: "JetBrains Mono, monospace", fontSize: "0.48rem", letterSpacing: "0.12em", color: "rgba(240,238,232,0.45)", textTransform: "uppercase", marginTop: "4px" }}>Projects</p>
             </motion.div>
-          </div>
-
-          {/* Mobile: simple stacked images */}
-          <div className="lg:hidden grid grid-cols-2 gap-3">
-            <img src={RESTAURANT_IMG} alt="Huitlacoche Taqueria" className="w-full h-40 object-cover shadow-md" />
-            <img src={BROOKLYN_IMG} alt="BC MentorHub" className="w-full h-40 object-cover shadow-md" />
-          </div>
+          </motion.div>
 
           {/* Right: editorial text */}
           <div className="flex flex-col justify-center">
