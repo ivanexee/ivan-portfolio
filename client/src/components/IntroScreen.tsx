@@ -515,35 +515,38 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
           {/* 3D scene — whole laptop tilted slightly toward viewer */}
           <div style={{
             transformStyle: "preserve-3d",
-            transform: "rotateX(12deg)",
+            transform: "rotateX(-8deg)",
             position: "relative",
+            display: "flex",
+            flexDirection: "column",
           }}>
 
-            {/* ── Lid (screen half) ── */}
-            {/* lidAngle=0: rotateX(170deg) = lid folded flat/closed over base */}
-            {/* lidAngle=1: rotateX(30deg)  = lid open, screen faces viewer    */}
+            {/* ── Lid (screen half) — sits ON TOP of base ── */}
+            {/* lidAngle=0: rotateX(-170deg) = closed flat (lid folded down onto base, face-down) */}
+            {/* lidAngle=1: rotateX(-20deg)  = open, screen tilted back facing viewer            */}
             <div
               style={{
                 transformStyle: "preserve-3d",
                 transformOrigin: "bottom center",
-                transform: `rotateX(${170 - 140 * lidAngle}deg)`,
+                transform: `rotateX(${-170 + 150 * lidAngle}deg)`,
                 position: "relative",
                 zIndex: 2,
+                order: 1,
               }}
             >
               <div style={{
                 background: "linear-gradient(to bottom, #1C1F24, #16191E)",
                 border: "2px solid #2C3038",
-                borderRadius: "14px 14px 0 0",
+                borderRadius: "14px 14px 4px 4px",
                 padding: "clamp(6px, 1.5vw, 12px)",
-                boxShadow: "0 -12px 60px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.04)",
+                boxShadow: "0 -8px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.04)",
               }}>
-                {/* Camera */}
+                {/* Camera notch */}
                 <div style={{ display: "flex", justifyContent: "center", marginBottom: "clamp(4px, 1vw, 8px)" }}>
                   <div style={{ width: "6px", height: "6px", borderRadius: "50%", background: phase === "face" ? "rgba(0,200,224,0.6)" : "#252830", transition: "background 0.4s", boxShadow: phase === "face" ? "0 0 8px rgba(0,200,224,0.5)" : "none" }} />
                 </div>
 
-                {/* Screen */}
+                {/* Screen display */}
                 <div style={{
                   background: "#050708",
                   borderRadius: "6px",
@@ -551,7 +554,6 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
                   aspectRatio: "16/10",
                   position: "relative",
                 }}>
-                  {/* IDLE state */}
                   {phase === "idle" && (
                     <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
                       <div style={{ width: "28px", height: "28px", border: "1.5px solid rgba(0,200,224,0.5)", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -562,20 +564,12 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
                       </p>
                     </div>
                   )}
-
-                  {/* OPENING state */}
                   {phase === "opening" && (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <div style={{ width: "18px", height: "18px", border: "2px solid rgba(0,200,224,0.6)", borderTopColor: "transparent", borderRadius: "50%", animation: "intro-spin 0.6s linear infinite" }} />
                     </div>
                   )}
-
-                  {/* FACE state */}
-                  {phase === "face" && (
-                    <FaceScreen onGranted={handleGranted} />
-                  )}
-
-                  {/* ZOOM state */}
+                  {phase === "face" && <FaceScreen onGranted={handleGranted} />}
                   {phase === "zoom" && (
                     <div style={{ width: "100%", height: "100%", background: "#050708", display: "flex", alignItems: "center", justifyContent: "center" }}>
                       <motion.div
@@ -594,22 +588,24 @@ export default function IntroScreen({ onComplete }: IntroScreenProps) {
               </div>
             </div>
 
-            {/* ── Base (keyboard half) ── */}
+            {/* ── Base (keyboard half) — always visible at bottom ── */}
             <div style={{
               background: "linear-gradient(to bottom, #1E2228, #181B20)",
               border: "2px solid #2C3038",
-              borderTop: "none",
-              borderRadius: "0 0 16px 16px",
-              height: "clamp(18px, 3vw, 26px)",
+              borderTop: "1px solid #252830",
+              borderRadius: "4px 4px 16px 16px",
+              height: "clamp(22px, 4vw, 32px)",
               position: "relative",
               zIndex: 1,
-              boxShadow: "0 16px 50px rgba(0,0,0,0.8)",
+              order: 2,
+              boxShadow: "0 20px 60px rgba(0,0,0,0.9), 0 8px 20px rgba(0,0,0,0.5)",
             }}>
-              <div style={{ position: "absolute", bottom: "4px", left: "50%", transform: "translateX(-50%)", width: "clamp(60px, 14vw, 90px)", height: "clamp(8px, 1.5vw, 12px)", background: "#252830", borderRadius: "3px" }} />
+              {/* Trackpad */}
+              <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: "clamp(50px, 12vw, 80px)", height: "clamp(6px, 1.2vw, 10px)", background: "#252830", borderRadius: "3px", opacity: 0.7 }} />
             </div>
 
-            {/* Shadow */}
-            <div style={{ position: "absolute", bottom: "-24px", left: "8%", right: "8%", height: "24px", background: "radial-gradient(ellipse, rgba(0,0,0,0.6) 0%, transparent 70%)", filter: "blur(10px)", zIndex: 0 }} />
+            {/* Ground shadow */}
+            <div style={{ position: "absolute", bottom: "-20px", left: "5%", right: "5%", height: "20px", background: "radial-gradient(ellipse, rgba(0,0,0,0.7) 0%, transparent 70%)", filter: "blur(12px)", zIndex: 0 }} />
 
           </div>{/* end 3D scene */}
         </div>
