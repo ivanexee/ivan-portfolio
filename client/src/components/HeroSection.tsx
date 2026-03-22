@@ -103,11 +103,11 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* Center: oversized IVAN — clean, no glitch */}
-        <div className="flex flex-col items-start">
+        {/* Center: oversized IVAN — perfectly centered, no glitch */}
+        <div className="flex flex-col items-center justify-center w-full">
           <h1
-            className="display-xl text-[#F0EEE8] leading-none select-none flex"
-            style={{ fontSize: `${fontSize}px` }}
+            className="display-xl text-[#F0EEE8] leading-none select-none flex justify-center w-full"
+            style={{ fontSize: `${fontSize}px`, textAlign: "center" }}
           >
             {LETTERS.map((letter, i) => (
               <motion.span
